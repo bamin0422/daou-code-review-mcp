@@ -14,6 +14,14 @@ export class WebhookController {
   root() {
     return { status: 'ok', message: 'Bitbucket Webhook Server is running.' };
   }
+  @Get('webhook/bitbucket')
+  getWebhookBitbucket() {
+    return {
+      status: 'ok',
+      message: 'Bitbucket Webhook endpoint (GET) is alive.',
+    };
+  }
+
   @Post('webhook/bitbucket')
   @HttpCode(200)
   handleBitbucketWebhook(
