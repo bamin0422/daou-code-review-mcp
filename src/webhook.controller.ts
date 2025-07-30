@@ -1,4 +1,4 @@
-import { Controller, Post, Headers, Body, HttpCode } from '@nestjs/common';
+import { Controller, Post, Headers, Body, HttpCode, Get } from '@nestjs/common';
 
 interface BitbucketPullRequest {
   id?: number;
@@ -8,9 +8,13 @@ interface BitbucketWebhookPayload {
   pullrequest?: BitbucketPullRequest;
 }
 
-@Controller('webhook')
+@Controller()
 export class WebhookController {
-  @Post('bitbucket')
+  @Get()
+  root() {
+    return { status: 'ok', message: 'Bitbucket Webhook Server is running.' };
+  }
+  @Post('webhook/bitbucket')
   @HttpCode(200)
   handleBitbucketWebhook(
     @Headers('x-event-key') eventKey: string,
