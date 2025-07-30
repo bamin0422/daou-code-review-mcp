@@ -1,18 +1,27 @@
 import { Controller, Post, Headers, Body, HttpCode } from '@nestjs/common';
-import { ReviewService } from './review.service';
+
+interface BitbucketPullRequest {
+  id?: number;
+  title?: string;
+}
+interface BitbucketWebhookPayload {
+  pullrequest?: BitbucketPullRequest;
+}
 
 @Controller('webhook')
 export class WebhookController {
-  constructor(private readonly reviewService: ReviewService) {}
-
   @Post('bitbucket')
   @HttpCode(200)
-  async handleBitbucketWebhook(
+  handleBitbucketWebhook(
     @Headers('x-event-key') eventKey: string,
-    @Body() payload: any,
+    @Body() payload: BitbucketWebhookPayload,
   ) {
     if (eventKey === 'pullrequest:created') {
-      await this.reviewService.createReviewForPR(payload);
+      const pr = payload.pullrequest;
+      const prId = pr?.id ?? '알수없음';
+      const prTitle = pr?.title ?? '제목없음';
+      console.log('새 PR 생성 감지:', prId, prTitle);
+      // 여기에 원하는 추가 동작 구현 가능
     }
     return { status: 'received' };
   }
